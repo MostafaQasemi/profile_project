@@ -24,10 +24,10 @@ class MyApp extends StatelessWidget {
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         textTheme: GoogleFonts.latoTextTheme(TextTheme(
           bodyMedium: TextStyle(
-            fontSize: 15,
+            fontSize: 13,
           ),
           bodyLarge: TextStyle(
-            fontSize: 13,
+            fontSize: 15,
           ),
           titleLarge: TextStyle(
             fontWeight: FontWeight.w400,
@@ -45,8 +45,28 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+enum SkillType {
+  photoshop,
+  xd,
+  illustrator,
+  afterEffect,
+  lightRoom,
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  var _skill = SkillType.photoshop;
+  void updatedSelectedSkills(SkillType skillType) {
+    setState(() {
+      this._skill = skillType;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,13 +122,19 @@ class MyHomePage extends StatelessWidget {
                           SizedBox(
                             width: 3,
                           ),
-                          Text('Paris, France'),
+                          Text(
+                            'Paris, France',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                         ],
                       )
                     ],
                   ),
                 ),
-                Icon(CupertinoIcons.heart),
+                Icon(
+                  CupertinoIcons.heart,
+                  color: Theme.of(context).primaryColor,
+                ),
               ],
             ),
           ),
@@ -122,7 +148,144 @@ class MyHomePage extends StatelessWidget {
             ],
           ),
           Divider(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
+            child: Row(
+              children: [
+                Text(
+                  'skills',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(fontWeight: FontWeight.w900),
+                ),
+                SizedBox(
+                  width: 4,
+                ),
+                Icon(
+                  CupertinoIcons.chevron_down,
+                  size: 12,
+                )
+              ],
+            ),
+          ),
+          // ignore: prefer_const_constructors
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            direction: Axis.horizontal,
+            children: [
+              Skill(
+                title: 'Photoshop',
+                imagePath: 'assets/images/app_icon_01.png',
+                isActive: _skill == SkillType.photoshop,
+                shadowColor: Colors.blue,
+                type: SkillType.photoshop,
+                ontap: () {
+                  updatedSelectedSkills(SkillType.photoshop);
+                },
+              ),
+              Skill(
+                title: 'Adobe XD',
+                imagePath: 'assets/images/app_icon_05.png',
+                isActive: _skill == SkillType.xd,
+                shadowColor: Colors.pink,
+                type: SkillType.xd,
+                ontap: () {
+                  updatedSelectedSkills(SkillType.xd);
+                },
+              ),
+              Skill(
+                title: 'AfterEffect',
+                imagePath: 'assets/images/app_icon_03.png',
+                isActive: _skill == SkillType.afterEffect,
+                shadowColor: Color.fromARGB(255, 224, 178, 1),
+                type: SkillType.afterEffect,
+                ontap: () {
+                  updatedSelectedSkills(SkillType.afterEffect);
+                },
+              ),
+              Skill(
+                title: 'Illustrator',
+                imagePath: 'assets/images/app_icon_04.png',
+                isActive: _skill == SkillType.illustrator,
+                shadowColor: Color.fromARGB(21, 101, 192, 1),
+                type: SkillType.illustrator,
+                ontap: () {
+                  updatedSelectedSkills(SkillType.illustrator);
+                },
+              ),
+              Skill(
+                title: 'LightRoom',
+                imagePath: 'assets/images/app_icon_02.png',
+                isActive: _skill == SkillType.lightRoom,
+                shadowColor: Colors.blue,
+                type: SkillType.lightRoom,
+                ontap: () {
+                  updatedSelectedSkills(SkillType.lightRoom);
+                },
+              ),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class Skill extends StatelessWidget {
+  final String title;
+  final String imagePath;
+  final bool isActive;
+  final Color shadowColor;
+  final SkillType type;
+  final Function() ontap;
+  const Skill(
+      {super.key,
+      required this.title,
+      required this.imagePath,
+      required this.isActive,
+      required this.shadowColor,
+      required this.type,
+      required this.ontap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: ontap,
+      child: Container(
+        width: 110,
+        height: 110,
+        decoration: isActive
+            ? BoxDecoration(
+                color: Theme.of(context).dividerColor,
+                borderRadius: BorderRadius.circular(16))
+            : null,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              decoration: isActive
+                  ? BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color: shadowColor.withOpacity(0.5), blurRadius: 20)
+                      ],
+                    )
+                  : null,
+              child: Image.asset(
+                imagePath,
+                width: 60,
+                height: 60,
+              ),
+            ),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ],
+        ),
       ),
     );
   }
